@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../ComplexNumbers.Application/ComplexNumbers.Application.csproj" Id="ad0ab4d6-f0d3-474c-b4e4-2deb327d48cb" />
+  <Project Path="../ComplexNumbers.Domain/ComplexNumbers.Domain.csproj" />
+  <Project Path="../ComplexNumbers.Infraestructure/ComplexNumbers.Infraestructure.csproj" Id="daca4cb6-bf4d-4cbc-965b-c3a410feb63e" />
+  <Project Path="ComplexNumbersAPI.csproj" />
+</Solution>

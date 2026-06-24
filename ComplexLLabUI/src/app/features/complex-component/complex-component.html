@@ -1,0 +1,60 @@
+<div class="complex-app">
+	<div class="controls">
+		<h2>Complex Calculator</h2>
+        <form [formGroup]="form" >
+            <fieldset>
+                <legend>Number A</legend>
+                <label>Real <input type="number" formControlName="realA" /></label>
+                <label>Imag <input type="number" formControlName="imagA" /></label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Number B</legend>
+                <label>Real <input type="number" formControlName="realB" /></label>
+                <label>Imag <input type="number" formControlName="imagB" /></label>
+            </fieldset>
+
+		    <div class="ops">
+                <button type="button" (click)="add()">A + B</button>
+                <button type="button" (click)="sub()">A - B</button>
+                <button type="button" (click)="mul()">A × B</button>
+                <button type="button" (click)="div()">A ÷ B</button>
+                <button type="button" (click)="conjugateA()">Conj(A)</button>
+                <button type="button" (click)="conjugateB()">Conj(B)</button>
+                <button type="button" (click)="magnitudeA()">|A|</button>
+                <button type="button" (click)="toPolarA()">Polar A</button>
+                <button type="button" (click)="magnitudeB()">|B|</button>
+                <button type="button" (click)="toPolarB()">Polar B</button>
+		    </div>
+			
+        </form>
+
+        <div class="result">
+            <p>Result: {{ result?.real }} + {{ result?.imaginary }}i</p>
+        </div>
+
+		<div class="history">
+			<strong>History</strong>
+			<ul>
+				<li *ngFor="let h of history">{{ h }}</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="graph">
+		<div class="graph-header">
+			<h3>Cartesian Plane</h3>
+			<div class="graph-controls">
+				<button (click)="zoomIn()">+</button>
+				<button (click)="zoomOut()">-</button>
+				<button (click)="resetView()">Reset</button>
+			</div>
+		</div>
+		<canvas #graph width="600" height="500"></canvas>
+		<div class="legend">
+			<span class="dot a"></span><span>A</span>
+			<span class="dot b"></span><span>B</span>
+			<span class="dot r"></span><span>Result</span>
+		</div>
+	</div>
+</div>
