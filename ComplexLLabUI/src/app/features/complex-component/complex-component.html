@@ -5,13 +5,13 @@
             <fieldset>
                 <legend>Number A</legend>
                 <label>Real <input type="number" formControlName="realA" /></label>
-                <label>Imag <input type="number" formControlName="imagA" /></label>
+                <label>Imag <input type="number" formControlName="imagA" /> i</label>
             </fieldset>
 
             <fieldset>
                 <legend>Number B</legend>
                 <label>Real <input type="number" formControlName="realB" /></label>
-                <label>Imag <input type="number" formControlName="imagB" /></label>
+                <label>Imag <input type="number" formControlName="imagB" /> i</label>
             </fieldset>
 
 		    <div class="ops">
@@ -30,7 +30,7 @@
         </form>
 
         <div class="result">
-            <p>Result: {{ result?.real }} + {{ result?.imaginary }}i</p>
+            <p>Result: {{ resultText() }}</p>
         </div>
 
 		<div class="history">

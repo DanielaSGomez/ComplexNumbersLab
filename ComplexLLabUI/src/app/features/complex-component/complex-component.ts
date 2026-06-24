@@ -36,8 +36,8 @@ export class ComplexComponent implements OnInit {
 
   private buildRequest(): ComplexRequestDTO {
     return {
-      first: { real: this.form.value.realA!, imaginary: this.form.value.imagA! },
-      second: { real: this.form.value.realB!, imaginary: this.form.value.imagB! }
+      first: { real: this.form.value.realA ?? 0, imaginary: this.form.value.imagA ?? 0 },
+      second: { real: this.form.value.realB ?? 0, imaginary: this.form.value.imagB ?? 0 }
     };
   }
 
@@ -45,67 +45,70 @@ export class ComplexComponent implements OnInit {
     const request = this.buildRequest();
     this.complexService.sum(request).subscribe(res => {
     this.result = res;
-    this.history.push(`A + B = ${res.real} + ${res.imaginary}i`);
+    this.addToHistory(`A + B = ${res.real} + ${res.imaginary}i`);
     this.drawGraph();
+    this.resultText();
     this.cdr.detectChanges();
-  });
-}
+    });
+  }
   
-
   sub(){
    const request = this.buildRequest();
     this.complexService.substract(request).subscribe(res => {
     this.result = res;
-    this.history.push(`A - B = ${res.real} + ${res.imaginary}i`);
+    this.addToHistory(`A - B = ${res.real} + ${res.imaginary}i`);
     this.drawGraph();
+    this.resultText();
     this.cdr.detectChanges();
     });
   }
 
   mul(){
-     const request = this.buildRequest();
-        this.complexService.multiply(request).subscribe(res => {
-        this.result = res;
-        this.history.push(`A × B = ${res.real} + ${res.imaginary}i`);
-        this.drawGraph();
-        this.cdr.detectChanges();
-        });
+    const request = this.buildRequest();
+    this.complexService.multiply(request).subscribe(res => {
+    this.result = res;
+    this.addToHistory(`A × B = ${res.real} + ${res.imaginary}i`);
+    this.drawGraph();
+    this.resultText();
+    this.cdr.detectChanges();
+    });
   }
 
   div(){
-         const request = this.buildRequest();
-            this.complexService.divide(request).subscribe(res => {
-            this.result = res;
-            this.cdr.detectChanges();
-            this.history.push(`A ÷ B = ${res.real} + ${res.imaginary}i`);
-            this.drawGraph();
-            });
+    const request = this.buildRequest();
+    this.complexService.divide(request).subscribe(res => {
+    this.result = res;        
+    this.addToHistory(`A ÷ B = ${res.real} + ${res.imaginary}i`);
+    this.drawGraph();
+    this.resultText();
+    this.cdr.detectChanges();
+    });
   }
 
   conjugateA(){
     this.result = { real: this.form.value.realA, imaginary: -this.form.value.imagA };
      this.resultText();
-    this.history.push(`conj(A) = ${this.result.real} + ${this.result.imaginary}i`);
+    this.addToHistory(`conj(A) = ${this.result.real} + ${this.result.imaginary}i`);
     this.drawGraph();
   }
 
   conjugateB(){
     this.result = { real: this.form.value.realB, imaginary: -this.form.value.imagB };
      this.resultText();
-    this.history.push(`conj(B) = ${this.result.real} + ${this.result.imaginary}i`);
+    this.addToHistory(`conj(B) = ${this.result.real} + ${this.result.imaginary}i`);
     this.drawGraph();
   }
 
   magnitudeA(){
     const mag = Math.hypot(this.form.value.realA, this.form.value.imagA);
      this.resultText();
-    this.history.push(`|A| = ${mag}`);
+    this.addToHistory(`|A| = ${mag}`);
     this.result = { real: mag, imaginary: 0 };
   }
   magnitudeB(){
     const mag = Math.hypot(this.form.value.realB, this.form.value.imagB);
      this.resultText();
-    this.history.push(`|B| = ${mag}`);
+    this.addToHistory(`|B| = ${mag}`);
     this.result = { real: mag, imaginary: 0 };
   }
 
@@ -113,20 +116,28 @@ export class ComplexComponent implements OnInit {
     const r = Math.hypot(this.form.value.realA, this.form.value.imagA);
     const theta = Math.atan2(this.form.value.imagA, this.form.value.realA);
     this.resultText();
-    this.history.push(`A polar: r=${r}, θ=${theta}`);
+    this.addToHistory(`A polar: r=${r}, θ=${theta}`);
     this.result = { real: r, imaginary: theta };
   }
   toPolarB(){
     const r = Math.hypot(this.form.value.realB, this.form.value.imagB);
     const theta = Math.atan2(this.form.value.imagB, this.form.value.realB);
     this.resultText();
-    this.history.push(`B polar: r=${r}, θ=${theta}`);
+    this.addToHistory(`B polar: r=${r}, θ=${theta}`);
     this.result = { real: r, imaginary: theta };
   }
 
 
   resultText(){
     return this.result ? `${this.result.real} + ${this.result.imaginary}i` : '';
+  }
+
+  addToHistory(result: string) {
+    this.history.unshift(result);
+
+    if (this.history.length > 5) {
+      this.history.pop();
+    }
   }
 
   zoomIn() { this.zoom *= 1.2; this.drawGraph(); }
@@ -208,19 +219,19 @@ export class ComplexComponent implements OnInit {
     const B = { x: Number(this.form.value.realB), y: Number(this.form.value.imagB) };
 
     const drawPoint = (x: number, y: number, color: string, label: string) => {
-      const px = originX + x * step;
-      const py = originY - y * step;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(px, py, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#000';
-      ctx.font = '13px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'bottom';
-      if (!(x === 0 && y === 0)) {
-            ctx.fillText(`${label} (${x}, ${y})`, px + 8, py - 8);
-        }
+    const px = originX + x * step;
+    const py = originY - y * step;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    if (!(x === 0 && y === 0)) {
+          ctx.fillText(`${label} (${x}, ${y})`, px + 8, py - 8);
+      }
     };
 
     ctx.strokeStyle = '#1e88e5';
@@ -237,7 +248,6 @@ export class ComplexComponent implements OnInit {
     ctx.stroke();
     drawPoint(B.x, B.y, '#43a047', 'B');
 
-    // Draw result
     if (this.result) {
       ctx.strokeStyle = 'red';
       ctx.lineWidth = 2;
